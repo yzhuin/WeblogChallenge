@@ -1,0 +1,9 @@
+spark-submit \
+  --class main.java.ca.yzhuin.paytm.driver.AggSessionDriver \
+  --master local[4] \
+  --conf "spark.driver.memory=4g" \
+  --conf "spark.driver.maxResultSize=4g" \
+  target/weblog-challenge-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
+  data/2015_07_22_mktplace_shop_web_log_sample.log \
+  ERROR
+  
