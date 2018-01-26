@@ -53,7 +53,7 @@ public class WebLogUtils
                 {
                     url = requestSplitted[1];
                 }
-                hitInfo = new HitInfo(instant, clientIP, url, userAgent);
+                hitInfo = new HitInfo(instant, clientIP, url);
             }
         }
         catch (IOException e)
@@ -64,19 +64,5 @@ public class WebLogUtils
         {
             return hitInfo;
         }
-    }
-
-    public static String formatTimeWindow(long milli)
-    {
-        long seconds = (milli / 1000) % 60;
-        long minutes = (milli / 1000 - seconds) / 60;
-        return minutes + "minutes " + seconds + " seconds";
-    }
-
-    public static String formatTimestamp(long timestampNano)
-    {
-        ZonedDateTime zdt = ZonedDateTime.ofInstant(Instant.ofEpochMilli(timestampNano / 1000)
-                .plusNanos(timestampNano % 1000), ZoneId.of("UTC"));
-        return zdt.format(DateTimeFormatter.ISO_INSTANT);
     }
 }

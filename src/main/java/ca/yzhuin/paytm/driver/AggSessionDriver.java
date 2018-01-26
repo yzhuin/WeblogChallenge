@@ -14,11 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
-public class AggDriver
+public class AggSessionDriver
 {
-    private static final Logger LOG = LoggerFactory.getLogger(AggDriver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AggSessionDriver.class);
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         String appName = MethodHandles.lookup().lookupClass().getName();
         SparkConf conf = new SparkConf().setAppName(appName);
@@ -74,8 +74,25 @@ public class AggDriver
         for (Tuple2<String, AggSessions> t2 : top)
         {
             //print them
-            System.out.println("top engaged users and their session information:");
-            System.out.println(t2._2());
+           // System.out.println("top engaged users and their session information:");
+           // System.out.println(t2._2());
         }
+
+        // full sessionized data
+        List<Tuple2<String, AggSessions>> all = agg.collect();
+        for (Tuple2<String, AggSessions> t2: all)
+        {
+            System.out.println(t2._2().printAll());
+        }
+
+        // for machine learning
+        /*
+        List<Tuple2<String, AggSessions>> all = agg.collect();
+
+        for (Tuple2<String, AggSessions> t2 : all)
+        {
+            System.out.println(t2._2().printForML());
+        }
+        */
     }
 }

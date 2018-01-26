@@ -224,6 +224,16 @@ public class AggSessions implements Serializable
        return sb.toString();
     }
 
+    public String printForML() throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        for (SessionInfo s : sessions)
+        {
+           sb.append(s.printForML() + "\n");
+        }
+        return sb.toString();
+    }
+
     public Duration getMaxSessionTime()
     {
         Duration maxSessionTime = Duration.ZERO;
@@ -371,6 +381,45 @@ public class AggSessions implements Serializable
                sb.append(hit.toString() + "\n");
             }
             sb.append("*****************************---session end---****************************\n");
+            return sb.toString();
+        }
+
+        // when this hit happens, how far it is from this session's start time?
+        public long getSessionTimeSoFar(Instant hitTime)
+        {
+            Duration dist = Duration.between(startTime, hitTime);
+            return dist.getSeconds();
+        }
+
+        public long getUniqueHitsSoFar(HitInfo thatHit)
+        {
+            Set<String> urls = new HashSet<>();
+            for (HitInfo hit : hits)
+            {
+               if (hit.compareTo(thatHit) != 0)
+               {
+                    urls.add(hit.getUrl());
+               }
+               else
+                   break;
+            }
+            return urls.size();
+        }
+
+        public String printForML() throws Exception
+        {
+            StringBuilder sb = new StringBuilder();
+            Duration duration = getDuration();
+            long uniqueHits = getUniqueHits();
+            for (HitInfo hit : hits)
+            {
+                //
+                // last 3 columns are y's
+                sb.append(hit.printForML() + "," + getSessionTimeSoFar(hit.getTimestamp()) + ","
+                        + getUniqueHitsSoFar(hit) + ","
+                        // to be predicted (session time granularity can be minute or second)
+                        + duration.toMinutes() + "," + duration.getSeconds() + ","+ uniqueHits + "\n");
+            }
             return sb.toString();
         }
     }
